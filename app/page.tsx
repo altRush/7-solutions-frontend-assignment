@@ -9,43 +9,42 @@ export default function Home() {
 	const [fruits, setFruits] = useState<Todo[]>([]);
 	const [vegetables, setVegetables] = useState<Todo[]>([]);
 
-	function pushForwardToTheirCategory(item: Todo) {
-		if (!item.type) return;
-
-		if (item.type === 'Fruit') {
-			console.log('push forward set fruits', [...fruits, item]);
-			setFruits([...fruits, item]);
-		}
-
-		if (item.type === 'Vegetable') {
-			console.log('push forward set vegs', [...vegetables, item]);
-			setVegetables([...vegetables, item]);
-		}
-
-		const filteredOutMainTodos = todos.filter(todo => todo.name !== item.name);
-		console.log('push forward set todos', filteredOutMainTodos);
-		setTodos(filteredOutMainTodos);
+	function getItemFromItemArray(itemArray: Todo[], filteringItem: Todo): Todo {
+		return itemArray.filter(item => item.name === filteringItem.name)[0];
 	}
 
-	function pushBackToMainTodos(item: Todo) {
+	function filterOutItemFromItemArray(
+		itemArray: Todo[],
+		filteringItem: Todo
+	): Todo[] {
+		return itemArray.filter(item => item.name !== filteringItem.name);
+	}
+
+	const setTimerPushBackToMainTodos = (item: Todo) => {
+		setTimeout(function () {
+			setFruits(fruits => [...filterOutItemFromItemArray(fruits, item)]);
+			setVegetables(vegetables => [
+				...filterOutItemFromItemArray(vegetables, item)
+			]);
+			setTodos(todos => [...todos, item]);
+		}, 5000);
+	};
+
+	function executeEvents(item: Todo) {
+		const getToPush = getItemFromItemArray(todos, item);
+		const updatedTodos = filterOutItemFromItemArray(todos, item);
+		pushForwardToTheirCategory(getToPush);
+		setTodos(updatedTodos);
+		setTimerPushBackToMainTodos(item);
+	}
+
+	function pushForwardToTheirCategory(item: Todo) {
 		if (item.type === 'Fruit') {
-			const filteredOutFruits = fruits.filter(
-				fruit => fruit.name !== item.name
-			);
-			console.log('push back set fruits', filteredOutFruits);
-			setFruits(filteredOutFruits);
+			setFruits([...fruits, item]);
 		}
-
 		if (item.type === 'Vegetable') {
-			const filteredOutVegetables = vegetables.filter(
-				vegetable => vegetable.name !== item.name
-			);
-			console.log('push back set veg', filteredOutVegetables);
-			setVegetables(filteredOutVegetables);
+			setVegetables([...vegetables, item]);
 		}
-
-		console.log('push back set todos', [...todos, item]);
-		setTodos([...todos, item]);
 	}
 
 	return (
@@ -62,7 +61,7 @@ export default function Home() {
 						{(todos as Todo[]).map((todo, i) => (
 							<div
 								onClick={() => {
-									pushForwardToTheirCategory(todo);
+									executeEvents(todo);
 								}}
 								key={i}
 							>
