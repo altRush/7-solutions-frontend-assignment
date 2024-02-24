@@ -4,6 +4,7 @@ import initialTodos from '../public/todos.json';
 import { useState } from 'react';
 import { Todo } from './types';
 import { filterOutItemFromItemArray } from './utils';
+import './styles.css';
 
 export default function Home() {
 	const [todos, setTodos] = useState(initialTodos);
@@ -53,12 +54,13 @@ export default function Home() {
 	}
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-between p-24">
-			<div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-3 lg:text-left">
-				<div className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-					<div className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+		<main className="flex flex-col items-center justify-between">
+			<div className="min-h-screen mb-32 grid text-center md:max-w-5xl md:w-full md:mb-0 md:grid-cols-3 md:text-left">
+				<div className="group rounded-lg border border-transparent px-5 py-4">
+					<div className={`m-0 text-sm opacity-50`}>
 						{todos.map((todo, i) => (
 							<div
+								className="todos-item first:mt-0 last:mb-0 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
 								onClick={() => {
 									executeEvents(todo);
 								}}
@@ -70,21 +72,37 @@ export default function Home() {
 					</div>
 				</div>
 
-				<div className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-					<h2 className={`mb-3 text-2xl font-semibold`}>Fruits</h2>
-					<div className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-						{fruits.map((fruit, i) => (
-							<div key={i}>{fruit.name}</div>
-						))}
+				<div className="px-5 py-4">
+					<div className="h-full categories group border border-transparent transition-colors hover:border-gray-300 hover:dark:border-neutral-700">
+						<div className={`mb-3 text-2xl categories-header`}>Fruits</div>
+						<div>
+							{fruits.map((fruit, i) => (
+								<div
+									className={`categories-item m-0 text-sm opacity-50`}
+									key={i}
+								>
+									{fruit.name}
+								</div>
+							))}
+						</div>
 					</div>
 				</div>
 
-				<div className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-					<h2 className={`mb-3 text-2xl font-semibold`}>Vegetables</h2>
-					<div className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-						{vegetables.map((vegetable, i) => (
-							<div key={i}>{vegetable.name}</div>
-						))}
+				<div className="px-5 py-4">
+					<div className="h-full categories group border border-transparent  transition-colors hover:border-gray-300 hover:dark:border-neutral-700">
+						<div className={`mb-3 text-2xl categories-header `}>Vegetables</div>
+						<div>
+							{vegetables.length
+								? vegetables.map((vegetable, i) => (
+										<div
+											className={`categories-item text-sm opacity-50`}
+											key={i}
+										>
+											{vegetable.name}
+										</div>
+								  ))
+								: null}
+						</div>
 					</div>
 				</div>
 			</div>
