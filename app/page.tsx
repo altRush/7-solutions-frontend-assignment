@@ -2,7 +2,7 @@
 
 import initialTodos from '../public/todos.json';
 import { useState } from 'react';
-import { Todo } from './types';
+import { Timer, Todo } from './types';
 import { filterOutItemFromItemArray } from './utils';
 import './styles.css';
 
@@ -10,13 +10,17 @@ export default function Home() {
 	const [todos, setTodos] = useState(initialTodos);
 	const [fruits, setFruits] = useState<Todo[]>([]);
 	const [vegetables, setVegetables] = useState<Todo[]>([]);
+	const [timers, setTimers] = useState<Timer[]>([]);
 
 	const PUSH_BACK_TIMEOUT_IN_MILLISECOND = 5000;
 
 	const setTimerPushBackToMainTodos = (item: Todo) => {
-		setTimeout(function () {
+		const id = item.name;
+		const timer = setTimeout(function () {
 			pushBackToMainTodos(item);
 		}, PUSH_BACK_TIMEOUT_IN_MILLISECOND);
+
+		setTimers(previousTimers => [...previousTimers, { id, timer }]);
 	};
 
 	function executeEvents(activeItem: Todo) {
@@ -37,7 +41,7 @@ export default function Home() {
 		setTodos(updatedTodos);
 	}
 
-	function pushBackToMainTodos(item: Todo) {
+	function pushBackToMainTodos(item: Todo, forceMove?: boolean) {
 		if (!item?.type) return;
 		if (item.type === 'Fruit') {
 			setFruits(previousFruits =>
@@ -50,6 +54,10 @@ export default function Home() {
 			);
 		}
 
+		const timersToClear = timers.filter(timer => timer.id === item.name);
+		if (timersToClear.length && forceMove) {
+			timersToClear.forEach(timer => clearTimeout(timer.timer));
+		}
 		setTodos(previousTodos => [...previousTodos, item]);
 	}
 
@@ -78,6 +86,9 @@ export default function Home() {
 						<div>
 							{fruits.map((fruit, i) => (
 								<div
+									onClick={() => {
+										pushBackToMainTodos(fruit, true);
+									}}
 									className={`categories-item m-0 text-sm opacity-50`}
 									key={i}
 								>
@@ -95,6 +106,9 @@ export default function Home() {
 							{vegetables.length
 								? vegetables.map((vegetable, i) => (
 										<div
+											onClick={() => {
+												pushBackToMainTodos(vegetable, true);
+											}}
 											className={`categories-item text-sm opacity-50`}
 											key={i}
 										>
