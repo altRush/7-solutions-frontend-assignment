@@ -1,3 +1,7 @@
+### Live app
+
+https://seven-solutions-frontend-assignment.onrender.com/
+
 ## Getting Started
 
 First, run the development server:
